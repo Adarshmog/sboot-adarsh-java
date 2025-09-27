@@ -1,0 +1,43 @@
+trigger: none
+
+pool:
+  name: "Adarsh-CI-CD"
+
+variables:
+  imageName: 'sboot'
+  registry: 'shark007.azurecr.io'
+  serviceConnection: 'docker-acr-shark'   # Azure DevOps ACR connection
+  webAppName: 'sboot-adarsh'
+  resourceGroup: 'OCEAN'
+
+stages:
+- stage: Build
+  jobs:
+  - job: BuildAndPush
+    steps:
+    - task: Maven@3
+      inputs:
+        mavenPomFile: 'pom.xml'
+        goals: 'clean package -DskipTests'
+
+    - task: Docker@2
+      inputs:
+        command: 'buildAndPush'
+        repository: '$(imageName)'
+        dockerfile: '**/Dockerfile'
+        containerRegistry: '$(serviceConnection)'
+        tags: |
+          $(Build.BuildId)
+
+- stage: Deploy
+  dependsOn: Build
+  jobs:
+  - job: DeployWebApp
+    steps:
+    - task: AzureWebAppContainer@1
+      inputs:
+        azureSubscription: 'adarsh-azure'
+        appName: '$(webAppName)'
+        resourceGroupName: '$(resourceGroup)'
+        imageName: '$(registry)/$(imageName):$(Build.BuildId)'
+
