@@ -7,7 +7,7 @@ pool:
 variables:
   imageName: 'sboot'
   registry: 'shark007.azurecr.io'
-  serviceConnection: 'docker-acr-shark'   # Azure DevOps ACR connection
+  serviceConnection: 'docker-acr-shark'   
   webAppName: 'sboot-adarsh'
   resourceGroup: 'OCEAN'
 
