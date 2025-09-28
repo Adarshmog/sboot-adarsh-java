@@ -2,7 +2,7 @@ trigger:
   - master
 
 pool:
-  name: "Adarsh-CI-CD"
+  name: "Adarsh-linux"
 
 variables:
   imageName: 'sboot'
